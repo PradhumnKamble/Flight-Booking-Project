@@ -5,7 +5,7 @@ class CrudRepository{
     constructor(model){
         this.model = model;
     }
-   // we handling errors in service layer
+   // we will be handling errors in service layer
     async create(data){
         const response = await this.model.create(data);
         return response;
