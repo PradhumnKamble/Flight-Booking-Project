@@ -9,7 +9,7 @@ const app = express();
 
 app.use(express.json());
 
-app.use(express.urlencoded({extended:true})) ; // parses econded things in url 
+app.use(express.urlencoded({extended:true})) ;
 
 const limiter = rateLimit({
     windowMs : 3 * 60 * 1000 , // 3 min
