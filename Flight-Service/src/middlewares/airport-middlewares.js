@@ -20,7 +20,7 @@ function validateCreateRequest(req, res,next){
     }
     if(!req.body.address){
         ErrorResponse.error = new AppError(["airport address not found"], StatusCodes.BAD_REQUEST);  
-        res
+        return res
             .status(StatusCodes.BAD_REQUEST)
             .json(ErrorResponse) ;
     }

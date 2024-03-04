@@ -1,4 +1,6 @@
 'use strict';
+const bcrypt = require('bcrypt');
+const {ServerConfig} = require('../config')
 const {
   Model
 } = require('sequelize');
@@ -11,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsToMany(models.Role ,{through : 'User_Roles',as :'role'})
     }
   }
   User.init({
@@ -34,5 +37,12 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'User',
   });
+  // sequelzie hooks ( == triggers)
+  // user is the object before it is is actually saved in the db 
+  User.beforeCreate(function encrypt(user){
+    const encryptedPass = bcrypt.hashSync(user.password , +ServerConfig.SALT_ROUNDS) ;
+    user.password = encryptedPass ;
+  }) ;
+
   return User;
 };

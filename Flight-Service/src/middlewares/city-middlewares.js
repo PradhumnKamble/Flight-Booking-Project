@@ -8,6 +8,7 @@ function validateCreateRequest(req, res,next){
     // raw strings should be avoided  , create a sep folder and store
     ErrorResponse.error = new AppError(["City not in correct form"], StatusCodes.BAD_REQUEST);  
     if(!req.body.name){
+        return
         res
             .status(StatusCodes.BAD_REQUEST)
             .json(ErrorResponse) ;
@@ -21,7 +22,7 @@ function validatePatchRequest(req, res,next){
     // raw strings should be avoided  , create a sep folder and store
     ErrorResponse.error = new AppError(["Req Body is empty"], StatusCodes.BAD_REQUEST);  
     if(Object.keys(req.body).length == 0){
-        res
+       return res
             .status(StatusCodes.BAD_REQUEST)
             .json(ErrorResponse) ;
     }

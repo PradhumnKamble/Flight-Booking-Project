@@ -21,7 +21,7 @@ function validateCreateRequest(req, res,next){
     }
     if(!req.body.arrivalAirportId){
         ErrorResponse.error = new AppError(["arrivalAirportId not found"], StatusCodes.BAD_REQUEST);  
-        res
+        return res
             .status(StatusCodes.BAD_REQUEST)
             .json(ErrorResponse) ;
     }

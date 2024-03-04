@@ -1,20 +1,36 @@
 const express = require("express");
+const rateLimit = require("express-rate-limit")
+const {createProxyMiddleware} = require("http-proxy-middleware");
 const apiRoutes = require("./routes") ;
-// this file contains basic server configurations
 
-const { ServerConfig } = require("./config/index.js"); // no need to add index.js
+const { ServerConfig } = require("./config/index.js");
 
 const app = express();
 
-app.use(express.json()); //==> will help to parse the incoming json data (only)
-// without it express wont be able to parse the data of type json
-// express.json() ==> returns a middleware that parses json data 
+app.use(express.json());
 
 app.use(express.urlencoded({extended:true})) ; // parses econded things in url 
 
-// 'apiRoutes' router will imposed on url conating /api as a part
-// if any point the url has /api , then we will bind apiRoutes to it
-// the return will be handled by apiRoutes
+const limiter = rateLimit({
+    windowMs : 3 * 60 * 1000 , // 3 min
+    limit : 15 // max 10 req from an 'ip' per window
+
+})
+const proxyFlightService = createProxyMiddleware({
+  target : ServerConfig.FLIGHT_SERVICE ,
+  changeOrigin :true ,
+  pathRewrite : {'^/flightsService' :'/'}
+})
+
+const proxyBookingService = createProxyMiddleware({
+  target : ServerConfig.BOOKING_SERVICE,
+  changeOrigin :true ,
+  pathRewrite : {'^/bookingsService' :'/'}
+})
+
+app.use(limiter) ;
+app.use('/flightsService',proxyFlightService);
+app.use('/bookingsService',proxyBookingService);
 app.use('/api' , apiRoutes) ;
 
 app.listen(ServerConfig.PORT, () => {
